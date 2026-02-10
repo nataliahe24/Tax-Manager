@@ -9,6 +9,12 @@
 </p>
 
 <p align="center">
+  <a href="https://698bafd6085d11f83c888199--statuesque-entremet-4c9d2f.netlify.app/">
+    <img src="https://img.shields.io/badge/Live_Demo-Netlify-00C7B7?logo=netlify&logoColor=white" alt="Live Demo" />
+  </a>
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/Next.js-16.1.6-black?logo=next.js" alt="Next.js" />
   <img src="https://img.shields.io/badge/React-19.2.3-61DAFB?logo=react" alt="React" />
   <img src="https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript" alt="TypeScript" />
