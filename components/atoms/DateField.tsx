@@ -18,6 +18,13 @@ export interface DateFieldProps {
   touched: boolean;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur: () => void;
+  min?: string;
+}
+
+function getTomorrow(): string {
+  const d = new Date();
+  d.setDate(d.getDate() + 1);
+  return d.toISOString().split("T")[0];
 }
 
 export function DateField({
@@ -28,9 +35,11 @@ export function DateField({
   touched,
   onChange,
   onBlur,
+  min,
 }: DateFieldProps) {
   const hasError = touched && error;
   const inputClass = `${inputBase}${hasError ? inputError : inputOk}`;
+  const minDate = min ?? getTomorrow();
 
   return (
     <div className="flex flex-col gap-1">
@@ -44,6 +53,7 @@ export function DateField({
         id={id}
         type="date"
         value={value}
+        min={minDate}
         onChange={onChange}
         onBlur={onBlur}
         className={inputClass}

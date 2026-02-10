@@ -66,6 +66,12 @@ function validateDescription(value: string): string | null {
 
 function validateDueDate(value: string): string | null {
   if (!value) return "La fecha es obligatoria.";
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const selected = new Date(value + "T00:00:00");
+  if (selected <= today) {
+    return "La fecha debe ser posterior a hoy.";
+  }
   return null;
 }
 
