@@ -120,10 +120,10 @@ export default function Home() {
   );
 
   return (
-    <div className="min-h-screen min-h-[100dvh] bg-white dark:bg-zinc-900">
-      <header className="bg-purple-600 px-4 py-4 shadow-md dark:bg-purple-800 sm:px-6 sm:py-5">
-        <div className="mx-auto flex max-w-2xl items-center justify-between gap-4">
-          <h1 className="flex flex-1 min-w-[609px] items-center justify-center gap-2 text-center text-xl font-bold text-white sm:text-2xl">
+    <div className="min-h-screen min-h-[100dvh] w-full overflow-x-hidden bg-white dark:bg-zinc-900">
+      <header className="w-full bg-purple-600 px-3 py-3 shadow-md dark:bg-purple-800 sm:px-6 sm:py-5">
+        <div className="mx-auto flex max-w-2xl items-center gap-2 sm:gap-4">
+          <h1 className="flex min-w-0 flex-1 items-center justify-center gap-1.5 text-base font-bold text-white sm:gap-2 sm:text-2xl">
             <span aria-hidden className="shrink-0">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -133,7 +133,7 @@ export default function Home() {
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="h-7 w-7 sm:h-8 sm:w-8"
+                className="h-5 w-5 sm:h-7 sm:w-7"
               >
                 <path d="M9 11l3 3L22 4" />
                 <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
