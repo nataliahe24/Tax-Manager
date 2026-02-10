@@ -11,6 +11,7 @@ const STORAGE_KEY = "task-manager-theme";
  * Applies the theme to document.documentElement so Tailwind's dark: variant works.
  */
 function applyTheme(theme: Theme) {
+  if (typeof document === "undefined") return;
   const root = document.documentElement;
   if (theme === "dark") {
     root.classList.add("dark");
