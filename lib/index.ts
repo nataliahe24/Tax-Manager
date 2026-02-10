@@ -4,6 +4,7 @@
 
 export type { Task, TaskPriority, TaskStatus } from "./types";
 export { formatDueDate, isOverdue } from "./date-utils";
+export { PRIORITY_STYLES } from "./priority-styles";
 
 /**
  * Generates a unique id for new tasks (time-based + random suffix).
