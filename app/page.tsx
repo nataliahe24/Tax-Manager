@@ -5,10 +5,10 @@ import { useToast } from "@/contexts/ToastContext";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useDebounce } from "@/hooks/useDebounce";
 import { generateId, type Task, type TaskStatus } from "@/lib";
-import type { TaskFormValues } from "@/components/TaskForm";
-import { TaskForm } from "@/components/TaskForm";
-import { TaskList } from "@/components/TaskList";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import type { TaskFormValues } from "@/components/organisms/TaskForm";
+import { TaskForm } from "@/components/organisms/TaskForm";
+import { TaskList } from "@/components/organisms/TaskList";
+import { ThemeToggle } from "@/components/molecules/ThemeToggle";
 
 export type TaskFilter = "all" | "active" | "completed";
 
@@ -102,6 +102,7 @@ export default function Home() {
   );
 
   const deleteTask = useCallback(
+    // Eliminada la clase min-w de <h1>; asegúrate de ajustar la clase del header, no este callback.
     (id: string) => {
       const task = tasks.find((t) => t.id === id);
       const confirmed = window.confirm(

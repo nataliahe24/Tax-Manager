@@ -1,8 +1,8 @@
 "use client";
 
 import { memo, useState, useRef, useEffect } from "react";
-import type { Task, TaskPriority, TaskStatus } from "@/lib";
-import { formatDueDate, isOverdue } from "@/lib";
+import type { Task, TaskStatus } from "@/lib";
+import { formatDueDate, isOverdue, PRIORITY_STYLES } from "@/lib";
 
 export interface TaskListProps {
   tasks: Task[];
@@ -11,31 +11,10 @@ export interface TaskListProps {
   onUpdateTask: (id: string, newTitle: string, newDescription: string) => void;
 }
 
-const PRIORITY_STYLES: Record<
-  TaskPriority,
-  { label: string; className: string }
-> = {
-  high: {
-    label: "Alta",
-    className:
-      "rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900/40 dark:text-red-300",
-  },
-  medium: {
-    label: "Media",
-    className:
-      "rounded-full bg-yellow-100 px-2 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300",
-  },
-  low: {
-    label: "Baja",
-    className:
-      "rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900/40 dark:text-green-300",
-  },
-};
-
 /**
- * Componente de tarea editable mostrando título, descripción y estado.
+ * Single editable task: view + edit mode, uses central PRIORITY_STYLES.
  */
-const EditableTaskItem = memo(function EditableTaskItem({
+const TaskItem = memo(function TaskItem({
   task,
   onUpdateStatus,
   onDelete,
@@ -261,7 +240,7 @@ export const TaskList = memo(function TaskList({
   return (
     <ul className="flex flex-col gap-3 sm:gap-4" role="list">
       {tasks.map((task) => (
-        <EditableTaskItem
+        <TaskItem
           key={task.id}
           task={task}
           onUpdateStatus={onUpdateStatus}
