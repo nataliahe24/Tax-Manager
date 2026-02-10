@@ -5,8 +5,19 @@ import {
   useCallback,
   useContext,
   useState,
+  useRef,
+  useEffect,
   type ReactNode,
 } from "react";
+
+// Helper to determine aria-live and role based on toast type
+export function getAriaProps(type: "success" | "error" | "info") {
+  if (type === "error") {
+    return { role: "alert", "aria-live": "assertive" as const };
+  }
+  // Success and info
+  return { role: "status", "aria-live": "polite" as const };
+}
 
 export type ToastType = "success" | "error" | "info";
 
@@ -34,6 +45,7 @@ interface ToastContextValue {
 const ToastContext = createContext<ToastContextValue | null>(null);
 
 const DURATION_MS = 3000;
+const EXIT_DURATION_MS = 300;
 
 function generateToastId() {
   return `toast-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
@@ -41,8 +53,16 @@ function generateToastId() {
 
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
+  const timeoutRefs = useRef<Map<string, ReturnType<typeof setTimeout>>>(
+    new Map(),
+  );
 
   const dismissToast = useCallback((id: string) => {
+    const tid = timeoutRefs.current.get(id);
+    if (tid !== undefined) {
+      clearTimeout(tid);
+      timeoutRefs.current.delete(id);
+    }
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
@@ -63,15 +83,24 @@ export function ToastProvider({ children }: { children: ReactNode }) {
         createdAt: Date.now(),
       };
       setToasts((prev) => [...prev, item]);
-      const exitDuration = 300;
-      setTimeout(() => {
+      const exitDelay = DURATION_MS - EXIT_DURATION_MS;
+      const tid = setTimeout(() => {
+        timeoutRefs.current.delete(id);
         setToasts((prev) =>
           prev.map((t) => (t.id === id ? { ...t, exiting: true } : t)),
         );
-      }, DURATION_MS - exitDuration);
+      }, exitDelay);
+      timeoutRefs.current.set(id, tid);
     },
     [],
   );
+
+  useEffect(() => {
+    return () => {
+      timeoutRefs.current.forEach((tid) => clearTimeout(tid));
+      timeoutRefs.current.clear();
+    };
+  }, []);
 
   return (
     <ToastContext.Provider value={{ toasts, showToast, dismissToast }}>
@@ -82,7 +111,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 }
 
 function ToastContainer() {
-  const { toasts, dismissToast } = useContext(ToastContext)!;
+  const { toasts, dismissToast, showToast } = useContext(ToastContext)!;
   return (
     <div
       className="pointer-events-none fixed top-4 right-4 z-50 flex max-w-[min(100vw-2rem,24rem)] flex-col gap-2 sm:top-6 sm:right-6"
@@ -90,7 +119,12 @@ function ToastContainer() {
       role="region"
     >
       {toasts.map((toast) => (
-        <ToastItem key={toast.id} toast={toast} onDismiss={dismissToast} />
+        <ToastItem
+          key={toast.id}
+          toast={toast}
+          onDismiss={dismissToast}
+          showToast={showToast}
+        />
       ))}
     </div>
   );
@@ -137,12 +171,16 @@ const TYPE_STYLES: Record<
   },
 };
 
+const UNDO_DISMISS_MS = 200;
+
 function ToastItem({
   toast,
   onDismiss,
+  showToast,
 }: {
   toast: ToastItem;
   onDismiss: (id: string) => void;
+  showToast: ToastContextValue["showToast"];
 }) {
   const [isExiting, setIsExiting] = useState(false);
   const styles = TYPE_STYLES[toast.type];
@@ -150,8 +188,13 @@ function ToastItem({
 
   const handleUndo = () => {
     setIsExiting(true);
-    toast.onUndo?.();
-    setTimeout(() => onDismiss(toast.id), 200);
+    try {
+      toast.onUndo?.();
+    } catch {
+      showToast("Error al deshacer", "No se pudo deshacer la acción.", "error");
+    } finally {
+      setTimeout(() => onDismiss(toast.id), UNDO_DISMISS_MS);
+    }
   };
 
   const handleAnimationEnd = () => {
