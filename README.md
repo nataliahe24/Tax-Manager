@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="https://698bafd6085d11f83c888199--statuesque-entremet-4c9d2f.netlify.app/">
+  <a href="https://statuesque-entremet-4c9d2f.netlify.app/">
     <img src="https://img.shields.io/badge/Live_Demo-Netlify-00C7B7?logo=netlify&logoColor=white" alt="Live Demo" />
   </a>
 </p>
